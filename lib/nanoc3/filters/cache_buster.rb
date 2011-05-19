@@ -1,3 +1,5 @@
+require 'digest'
+
 module Nanoc3
   module Filters
 
@@ -23,7 +25,7 @@ module Nanoc3
       REGEX_CSS = /url\(('|"|)(([^'")]+)\.(#{EXTENSIONS.join('|')}))\1\)/i
 
       # Regex for finding all references to files to be cache busted in HTML files
-      REGEX_HTML = /(href|src)="([^"]+(\.(?:#{EXTENSIONS.join('|')})))"/
+      REGEX_HTML = /(href|src)=("|'|)([^'"]+(\.(?:#{EXTENSIONS.join('|')})))\2/
 
       # Custom exception that can be raised by #source_path
       NoSuchSourceFile = Class.new(Exception)
@@ -113,10 +115,10 @@ module Nanoc3
       # @return <String> rewritten content
       def bust_page(content)
         content.gsub(REGEX_HTML) do |m|
-          attribute, path, extension = $1, $2, $3
+          attribute, quote, path, extension = $1, $2, $3, $4
           begin
             real_path = content_path(source_path(path))
-            %Q{#{attribute}="#{path.sub(extension, self.class.hash(real_path) + extension)}"}
+            %Q{#{attribute}=#{quote}#{path.sub(extension, self.class.hash(real_path) + extension)}#{quote}}
           rescue NoSuchSourceFile, NoCacheBusting
             m
           end
