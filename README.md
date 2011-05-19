@@ -1,5 +1,7 @@
 A simple Ruby gem that enhances Nanoc with cache-busting capabilities.
 
+I am currently extracting these features from another project, so it is still very much a work-in-progress.
+
 Description
 ===========
 
