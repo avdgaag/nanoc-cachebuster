@@ -5,16 +5,18 @@ describe Nanoc3::Helpers::CacheBusting do
   end
 
   describe '#should_cachebust?' do
-    %w{css js png jpg jpeg gif}.each do |extension|
-      it { should be_cachebust({ :extension => extension }) }
+    %w{png jpg jpeg gif css js scss sass less coffee html htm}.each do |extension|
+      it "should add fingerprint to #{extension} files" do
+        subject.cachebust?({ :extension => extension }).should be_true
+      end
     end
   end
 
-  describe '#cachebusting_hash' do
+  describe '#fingerprint' do
     it 'should calculate a checksum of the source file' do
       File.should_receive(:read).with('foo').and_return('baz')
       Digest::MD5.should_receive(:hexdigest).with('baz').and_return('bar')
-      subject.cachebusting_hash('foo').should == '-cbbar'
+      subject.fingerprint('foo').should == '-cbbar'
     end
   end
 end
