@@ -32,7 +32,7 @@ install this gem:
 
 Then load it via your project Gemfile or in `./lib/default.rb`:
 
-    require 'nanoc-cachebuster'
+    require 'nanoc3/cachebuster'
 
 Usage
 =====
