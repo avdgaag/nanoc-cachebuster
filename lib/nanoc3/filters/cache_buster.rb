@@ -16,14 +16,11 @@ module Nanoc3
     class CacheBuster < Nanoc3::Filter
       identifier :cache_buster
 
-      # List of extensions of files we want to cache-bust
-      EXTENSIONS = %w{gif jpg jpeg png css bmp js scss sass coffee less}
-
       # Regex for finding all references to files to be cache busted in CSS files
-      REGEX_CSS = /url\(('|"|)(([^'")]+)\.(#{EXTENSIONS.join('|')}))\1\)/i
+      REGEX_CSS = /url\(('|"|)(([^'")]+)\.(#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')}))\1\)/i
 
       # Regex for finding all references to files to be cache busted in HTML files
-      REGEX_HTML = /(href|src)=("|'|)([^'"]+(\.(?:#{EXTENSIONS.join('|')})))\2/
+      REGEX_HTML = /(href|src)=("|'|)([^'"]+(\.(?:#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})))\2/
 
       # Custom exception that can be raised by #source_path
       # when a source file for a reference cannot be found
