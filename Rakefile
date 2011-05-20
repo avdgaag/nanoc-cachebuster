@@ -1,14 +1,11 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'nanoc3/cachebuster/version'
 
-def sh(s)
-  puts 'Dummy operation:', s
-end
-
 task :build do
   sh 'gem build nanoc-cachebuster.gemspec'
 end
 
+desc 'Install the gem locally'
 task :install => :build do
   sh "gem install nanoc-cachebuster-#{Nanoc3::Cachebuster::VERSION}.gem"
 end
