@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path('../lib', __FILE__)
-require 'nanoc_cachebuster/version'
+require 'nanoc3/cachebuster/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'nanoc_cachebuster'
-  s.version     = NanocCachebuster::VERSION
+  s.name        = 'nanoc-cachebuster'
+  s.version     = Nanoc3::Cachebuster::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Arjan van der Gaag']
   s.email       = ['arjan@arjanvandergaag.nl']
@@ -25,7 +25,7 @@ It works on images, javascripts and stylesheets. It is extracted from the
 nanoc-template project at http://github.com/avdgaag/nanoc-template.
 EOS
 
-  s.rubyforge_project = 'nanoc_cachebuster'
+  s.rubyforge_project = 'nanoc-cachebuster'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

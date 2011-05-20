@@ -1,16 +1,20 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
-require 'nanoc_cachebuster/version'
+require 'nanoc3/cachebuster/version'
 
 def sh(s)
   puts 'Dummy operation:', s
 end
 
 task :build do
-  sh 'gem build nanoc_cachebuster.gemspec'
+  sh 'gem build nanoc-cachebuster.gemspec'
+end
+
+task :install => :build do
+  sh "gem install nanoc-cachebuster-#{Nanoc3::Cachebuster::VERSION}.gem"
 end
 
 task :tag do
-  sh "git tag -a #{NanocCachebuster::VERSION}"
+  sh "git tag -a #{Nanoc3::Cachebuster::VERSION}"
 end
 
 task :push do
@@ -36,7 +40,7 @@ end
 
 desc 'Tag the code, push upstream, build and push the gem'
 task :release => [:build, :tag, :push] do
-  sh "gem push nanoc_cachebuster-#{NanocCachebuster::VERSION}"
+  sh "gem push nanoc-cachebuster-#{NanocCachebuster::VERSION}"
 end
 
 desc 'Print current version number'
@@ -63,7 +67,7 @@ class Version
   end
 
   def write
-    file = File.expand_path('../lib/nanoc_cachebuster/version.rb', __FILE__)
+    file = File.expand_path('../lib/nanoc-cachebuster/version.rb', __FILE__)
     original_contents = File.read(file)
     File.open(file, 'w') do |f|
       f.write original_contents.gsub(/VERSION = ('|")\d+\.\d+\.\d+\1/, "VERSION = '#{to_s}'")

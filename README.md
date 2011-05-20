@@ -28,11 +28,11 @@ As an extension to Nanoc, you need to have that installed and working before
 you can add this gem. When your Nanoc project is up and running, simply
 install this gem:
 
-    $ gem install nanoc_cachebuster
+    $ gem install nanoc-cachebuster
 
 Then load it via your project Gemfile or in `./lib/default.rb`:
 
-    require 'nanoc_cachebuster'
+    require 'nanoc-cachebuster'
 
 Usage
 =====
@@ -88,7 +88,7 @@ To do
 Dependencies
 ------------
 
-nanoc_cachebuster obviously depends on Nanoc, but has no further dependencies.
+nanoc-cachebuster obviously depends on Nanoc, but has no further dependencies.
 
 Credits
 =======
