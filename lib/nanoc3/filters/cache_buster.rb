@@ -28,6 +28,7 @@ module Nanoc3
       REGEX_HTML = /(href|src)=("|'|)([^'"]+(\.(?:#{EXTENSIONS.join('|')})))\2/
 
       # Custom exception that can be raised by #source_path
+      # when a source file for a reference cannot be found
       NoSuchSourceFile = Class.new(Exception)
 
       # Custom exception that can be raised by #source_path when trying to rewrite
@@ -183,3 +184,4 @@ module Nanoc3
     end
   end
 end
+
