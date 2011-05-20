@@ -49,15 +49,6 @@ module Nanoc3
         '-cb' + Digest::MD5.hexdigest(File.read(path))[0..8]
       end
 
-      # Test if we want to filter the output filename for a given item.
-      # This is logic used in the Rules file, but doesn't belong there.
-      #
-      # @param <Item> item is the item to test
-      # @return <Boolean>
-      def self.should_filter?(item)
-        EXTENSIONS.include? item[:extension]
-      end
-
     private
 
       # See if the current item is a stylesheet.
