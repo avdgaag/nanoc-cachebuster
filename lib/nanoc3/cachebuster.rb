@@ -1,3 +1,5 @@
+require 'nanoc3'
+
 module Nanoc3
   module Cachebuster
     autoload :VERSION,  'cachebuster/version'
