@@ -1,7 +1,7 @@
 module Nanoc3
   module Helpers
     module CacheBusting
-      def should_cachebust?(item)
+      def cachebust?(item)
         Nanoc3::Filters::CacheBuster.should_filter? item
       end
 
