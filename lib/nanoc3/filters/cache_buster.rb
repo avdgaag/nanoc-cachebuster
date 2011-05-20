@@ -1,5 +1,3 @@
-require 'digest'
-
 module Nanoc3
   module Filters
 
@@ -40,15 +38,6 @@ module Nanoc3
         stylesheet? ? bust_stylesheet(content) : bust_page(content)
       end
 
-      # Get a unique fingerprint for a file's content. This currently uses
-      # an MD5 hash of the file contents.
-      #
-      # @param <String> path is the path to the file to fingerprint.
-      # @return <String> file fingerprint
-      def self.hash(path)
-        '-cb' + Digest::MD5.hexdigest(File.read(path))[0..8]
-      end
-
     private
 
       # See if the current item is a stylesheet.
@@ -86,7 +75,7 @@ module Nanoc3
           quote, filename, basename, extension = $1, $2, $3, $4
           begin
             real_path = content_path(source_path(filename))
-            m.sub(filename, basename + self.class.hash(real_path) + '.' + extension)
+            m.sub(filename, basename + Nanoc3::Cachebuster.fingerprint_file(real_path) + '.' + extension)
           rescue NoCacheBusting, NoSuchSourceFile
             m
           end
@@ -110,7 +99,7 @@ module Nanoc3
           attribute, quote, path, extension = $1, $2, $3, $4
           begin
             real_path = content_path(source_path(path))
-            %Q{#{attribute}=#{quote}#{path.sub(extension, self.class.hash(real_path) + extension)}#{quote}}
+            %Q{#{attribute}=#{quote}#{path.sub(extension, Nanoc3::Cachebuster.fingerprint_file(real_path) + extension)}#{quote}}
           rescue NoSuchSourceFile, NoCacheBusting
             m
           end

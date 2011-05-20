@@ -12,11 +12,11 @@ describe Nanoc3::Helpers::CacheBusting do
     end
   end
 
-  describe '#cachebusting_hash' do
+  describe '#fingerprint' do
     it 'should calculate a checksum of the source file' do
       File.should_receive(:read).with('foo').and_return('baz')
       Digest::MD5.should_receive(:hexdigest).with('baz').and_return('bar')
-      subject.cachebusting_hash('foo').should == '-cbbar'
+      subject.fingerprint('foo').should == '-cbbar'
     end
   end
 end
