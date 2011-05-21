@@ -40,4 +40,5 @@ module Nanoc3
 
   require File.expand_path('../filters', __FILE__)
   require File.expand_path('../helpers', __FILE__)
+  require File.expand_path('../cachebuster/strategy', __FILE__)
 end
