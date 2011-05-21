@@ -1,18 +1,5 @@
 module Nanoc3
   module Filters
-
-    # The cache buster filter rewrites references to external files, so that the
-    # filenames include a timestamp. This creates a unique filename that will
-    # change whenever the file is changed.
-    #
-    # This allows you to use far-future expires headers to fully benefit from
-    # client-side caching.
-    #
-    # We do not simply append a query string, as this might sometimes trigger
-    # proxies to not cache the results.
-    #
-    # Note: this requires you to use .htaccess rewrites to point the
-    # filenames-with-timestamps back into normal filenames.
     class CacheBuster < Nanoc3::Filter
       identifier :cache_buster
 
