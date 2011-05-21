@@ -21,7 +21,7 @@ module Nanoc3
         content.gsub(strategy.class::REGEX) do |m|
           begin
             strategy.apply m, $1, $2, $3, $4
-          rescue Nanoc3::Cachebuster::NoCacheBusting, Nanoc3::Cachebuster::NoSuchSourceFile
+          rescue Nanoc3::Cachebuster::NoSuchSourceFile
             m
           end
         end
@@ -51,21 +51,6 @@ module Nanoc3
           @site, @item = site, item
         end
 
-        def fingerprint(filename)
-          Nanoc3::Cachebuster.fingerprint_file content_path(source_path(filename))
-        end
-
-        # Make a path relative to the site's content dir absolute
-        # This works just like File.join, but makes the end result relative
-        # to the project directory (the directory one level above this file).
-        #
-        # @param <String> path part of a path
-        # @param ...
-        # @return <String> path
-        def content_path(*path)
-          File.join(Dir.pwd, 'content', *path)
-        end
-
         # Try to find the source path of a referenced file.
         #
         # This will use Nanoc's routing rules to try and find an item whose output
@@ -81,23 +66,18 @@ module Nanoc3
         #   file, such as '/assets/styles.css'
         # @return <String> the path to the content file for the referenced file,
         #   such as '/assets/styles.scss'
-        def source_path(path)
-          path = absolutize(path)
+        def output_filename(input_path)
+          path = absolutize(input_path)
 
           matching_item = site.items.find do |i|
             i.path.sub(/-cb[a-zA-Z0-9]{9}(?=\.)/, '') == path
           end
 
-          # Make sure the reference is left alone if we cannot find a source file
-          # to base the fingerprint on, or if the file for some reason has no
-          # cache busting applied to it (for example, when it is manually overriden
-          # in the Rules file.)
-          raise Nanoc3::Cachebuster::NoSuchSourceFile, 'no source file found matching ' + path unless matching_item
-          raise Nanoc3::Cachebuster::NoCacheBusting, 'there is no cache busting applied to ' + matching_item.identifier unless matching_item.path =~ /-cb[a-zA-Z0-9]{9}(?=\.)/
+          raise Nanoc3::Cachebuster::NoSuchSourceFile, 'No source file found matching ' + input_path unless matching_item
 
-          # Return the path to the source file in question without the starting content
-          # part, since that is added by #content_path
-          matching_item[:content_filename].sub(/^content\//, '')
+          output_path = matching_item.path
+          output_path.sub!(/^\//, '') unless input_path =~ /^\//
+          output_path
         end
 
         # Get the absolute path to a file, whereby absolute means relative to the root.
@@ -127,7 +107,7 @@ module Nanoc3
         REGEX = /url\(('|"|)(([^'")]+)\.(#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')}))\1\)/i
 
         def apply(m, quote, filename, basename, extension)
-          m.sub(filename, basename + fingerprint(filename) + '.' + extension)
+          m.sub(filename, output_filename(filename))
         end
       end
 
@@ -135,7 +115,7 @@ module Nanoc3
         REGEX = /(href|src)=("|'|)([^'"]+(\.(?:#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})))\2/
 
         def apply(m, attribute, quote, filename, extension)
-          %Q{#{attribute}=#{quote}#{filename.sub(extension, fingerprint(filename) + extension)}#{quote}}
+          %Q{#{attribute}=#{quote}#{output_filename(filename)}#{quote}}
         end
       end
     end

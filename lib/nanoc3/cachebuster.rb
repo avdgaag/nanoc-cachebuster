@@ -17,11 +17,6 @@ module Nanoc3
     # when a source file for a reference cannot be found
     NoSuchSourceFile = Class.new(Exception)
 
-    # Custom exception that can be raised by #source_path when trying to rewrite
-    # the name of a file that will not be cache busted and should hence be
-    # left alone.
-    NoCacheBusting = Class.new(Exception)
-
     def self.should_apply_fingerprint_to_file?(item)
       FILETYPES_TO_FINGERPRINT.include? item[:extension]
     end
