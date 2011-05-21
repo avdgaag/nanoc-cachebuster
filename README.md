@@ -1,7 +1,5 @@
 A simple Ruby gem that enhances Nanoc with cache-busting capabilities.
 
-I am currently extracting these features from another project, so it is still very much a work-in-progress.
-
 Description
 ===========
 
@@ -17,7 +15,6 @@ you output fingerprinted filenames, and refer to them from your source files.
 
 More information
 ----------------
-
 
 Find out more about Nanoc by Denis Defreyne at http://nanoc.stoneship.org.
 
@@ -52,19 +49,15 @@ The adjusted filename changes every time the file itself changes, so you don't
 want to code that by hand in your Rules file. Instead, use the helper methods
 provided. First, include the helpers in your ./lib/default.rb:
 
-    include Nanoc3::Helpers::Cachebusting
+    include Nanoc3::Helpers::CacheBusting
 
 Then you can use `#should_cachebust?` and `#cachebusting_hash` in your routing
 rules to determine whether an item needs cachebusting, and get the fingerprint
 for it. So you can do something like:
 
     route 'styles' do
-      if should_cachebust? item
-        item.identifier.chop + cachebusting_hash(item[:filename]) +
-          '.' + item[:extension]
-      else
-        item.identifier.chop + '.' + item[:extension]
-      end
+      fp = cachebust?(item) ? fingerprint(item[:filename]) : ''
+      item.identifier.chop + fp + '.' + item[:extension]
     end
 
 Development
@@ -75,20 +68,11 @@ Changes
 
 See HISTORY.md for the full changelog.
 
-To do
------
-
-* There is some magic going on here in detecting file references, and
-  inferring the source item filename from that reference. This should be
-  cleaned up and tested.
-* There should also be one single method of determining the output filename
-  both in the reference rewriter and the Rules file, so no mismatch can occur.
-* Finally, the filter should be refactored in something more maintainable.
-
 Dependencies
 ------------
 
 nanoc-cachebuster obviously depends on Nanoc, but has no further dependencies.
+To test it you will need Rspec.
 
 Credits
 =======
