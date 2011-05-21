@@ -10,6 +10,8 @@ module Nanoc3
     # we also include the extensions used by popular preprocessors.
     FILETYPES_TO_FINGERPRINT = %w[css js scss sass less coffee html htm png jpg jpeg gif]
 
+    FILETYPES_CONSIDERED_CSS = %w[css js scss sass less]
+
     # Value prepended to the file fingerprint, to identify it as a cache buster.
     CACHEBUSTER_PREFIX = '-cb'
 

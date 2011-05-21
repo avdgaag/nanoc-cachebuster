@@ -43,16 +43,14 @@ describe Nanoc3::Filters::CacheBuster do
 
   let(:subject) { Nanoc3::Filters::CacheBuster.new context }
   let(:content) { item.content }
-  let(:config)  { { :filter_extensions => { :scss => 'css' } } }
   let(:item)    { MockItem.css_file }
   let(:target)  { MockItem.image_file }
   let(:items)   { [item, target] }
-  let(:site)    { OpenStruct.new({ :config => config, :items => items }) }
+  let(:site)    { OpenStruct.new({ :items => items }) }
   let(:context) do
     {
         :site    => site,
         :item    => item,
-        :config  => config,
         :content => content,
         :items   => items
     }

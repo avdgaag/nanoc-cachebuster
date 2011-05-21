@@ -19,17 +19,13 @@ module Nanoc3
 
       # See if the current item is a stylesheet.
       #
-      # Apart from regular .css-files, this method will consider any file
-      # with an extension that is mapped to 'css' in the filter_extensions
-      # setting in config.yaml to be a CSS file.
+      # This is a simple check for filetypes, but you can override what strategy to use
+      # with the filter options. This provides a default.
       #
+      # @see Nanoc3::Cachebuster::FILETYPES_CONSIDERED_CSS
       # @return <Bool>
       def stylesheet?
-        @site.config[:filter_extensions].select do |k, v|
-          v == 'css'
-        end.flatten.uniq.map do |k|
-          k.to_s
-        end.include?(@item[:extension].to_s)
+        Nanoc3::Cachebuster::FILETYPES_CONSIDERED_CSS.include?(item[:extension].to_s)
       end
 
       # The Strategy is a way to deal with an input file. The Cache busting filter
