@@ -1,3 +1,5 @@
 # 0.0.1
 
-* First, direct extraction. Lots of work to do.
+* No more re-calculation of fingerprints, just use the routed filename.
+* Refactored into separate strategies.
+* First, direct extraction.
