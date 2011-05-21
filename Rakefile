@@ -27,7 +27,7 @@ task :log do
   path = File.expand_path('../HISTORY.md', __FILE__)
 
   original_content = File.read(path)
-  addition = "# #{NanocCachebuster::VERSION}\n\n#{changes}"
+  addition = "# #{Nanoc3::Cachebuster::VERSION}\n\n#{changes}"
   puts addition
 
   File.open(path, 'w') do |f|
@@ -37,12 +37,12 @@ end
 
 desc 'Tag the code, push upstream, build and push the gem'
 task :release => [:build, :tag, :push] do
-  sh "gem push nanoc-cachebuster-#{NanocCachebuster::VERSION}"
+  sh "gem push nanoc-cachebuster-#{Nanoc3::Cachebuster::VERSION}"
 end
 
 desc 'Print current version number'
 task :version do
-  puts NanocCachebuster::VERSION
+  puts Nanoc3::Cachebuster::VERSION
 end
 
 class Version
@@ -64,7 +64,7 @@ class Version
   end
 
   def write
-    file = File.expand_path('../lib/nanoc-cachebuster/version.rb', __FILE__)
+    file = File.expand_path('../lib/nanoc3/cachebuster/version.rb', __FILE__)
     original_contents = File.read(file)
     File.open(file, 'w') do |f|
       f.write original_contents.gsub(/VERSION = ('|")\d+\.\d+\.\d+\1/, "VERSION = '#{to_s}'")
@@ -78,17 +78,17 @@ namespace :version do
   namespace :bump do
     desc 'Bump a major version'
     task :major do
-      Version.new(NanocCachebuster::VERSION).bump(:major).write
+      Version.new(Nanoc3::Cachebuster::VERSION).bump(:major).write
     end
 
     desc 'Bump a minor version'
     task :minor do
-      Version.new(NanocCachebuster::VERSION).bump(:minor).write
+      Version.new(Nanoc3::Cachebuster::VERSION).bump(:minor).write
     end
 
     desc 'Bump a patch version'
     task :patch do
-      Version.new(NanocCachebuster::VERSION).bump(:patch).write
+      Version.new(Nanoc3::Cachebuster::VERSION).bump(:patch).write
     end
   end
 end
