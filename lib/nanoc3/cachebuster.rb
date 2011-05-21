@@ -20,6 +20,10 @@ module Nanoc3
     # This exception should never bubble up from the filter.
     NoSuchSourceFile = Class.new(Exception)
 
+    # Custom exception that will be raised when trying to use a filtering
+    # strategy that does not exist. This will bubble up to the end user.
+    NoSuchStrategy = Class.new(Exception)
+
     def self.should_apply_fingerprint_to_file?(item)
       FILETYPES_TO_FINGERPRINT.include? item[:extension]
     end

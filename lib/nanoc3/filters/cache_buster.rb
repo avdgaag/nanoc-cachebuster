@@ -16,8 +16,9 @@ module Nanoc3
     class CacheBuster < Nanoc3::Filter
       identifier :cache_buster
 
-      def run(content, args = {})
-        strategy = stylesheet? ? Css.new(site, item) : Html.new(site, item)
+      def run(content, options = {})
+        kind = options[:strategy] || (stylesheet? ? :css : :html)
+        strategy = Strategy.for(kind , site, item)
         content.gsub(strategy.class::REGEX) do |m|
           begin
             strategy.apply m, $1, $2, $3, $4
@@ -50,6 +51,19 @@ module Nanoc3
       #
       # @abstract
       class Strategy
+
+        @subclasses = {}
+
+        def self.inherited(subclass)
+          @subclasses[subclass.to_s.split('::').last.downcase.to_sym] = subclass
+        end
+
+        def self.for(kind, site, item)
+          klass = @subclasses[kind]
+          raise Nanoc3::Cachebuster::NoSuchStrategy.new "No strategy found for #{kind}" unless klass
+          klass.new(site, item)
+        end
+
         # The current site. We need a reference to that in a strategy,
         # so we can browse through all its items.
         #
