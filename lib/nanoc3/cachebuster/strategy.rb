@@ -67,6 +67,7 @@ module Nanoc3
         path = absolutize(input_path)
 
         matching_item = site.items.find do |i|
+          next unless i.path # some items don't have an output path. Ignore those.
           i.path.sub(/#{Nanoc3::Cachebuster::CACHEBUSTER_PREFIX}[a-zA-Z0-9]{9}(?=\.)/o, '') == path
         end
 
