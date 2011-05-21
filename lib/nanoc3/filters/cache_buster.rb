@@ -22,15 +22,6 @@ module Nanoc3
       # Regex for finding all references to files to be cache busted in HTML files
       REGEX_HTML = /(href|src)=("|'|)([^'"]+(\.(?:#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})))\2/
 
-      # Custom exception that can be raised by #source_path
-      # when a source file for a reference cannot be found
-      NoSuchSourceFile = Class.new(Exception)
-
-      # Custom exception that can be raised by #source_path when trying to rewrite
-      # the name of a file that will not be cache busted and should hence be
-      # left alone.
-      NoCacheBusting = Class.new(Exception)
-
       def run(content, args = {})
         stylesheet? ? bust_stylesheet(content) : bust_page(content)
       end
@@ -73,7 +64,7 @@ module Nanoc3
           begin
             real_path = content_path(source_path(filename))
             m.sub(filename, basename + Nanoc3::Cachebuster.fingerprint_file(real_path) + '.' + extension)
-          rescue NoCacheBusting, NoSuchSourceFile
+          rescue Nanoc3::Cachebuster::NoCacheBusting, Nanoc3::Cachebuster::NoSuchSourceFile
             m
           end
         end
@@ -97,7 +88,7 @@ module Nanoc3
           begin
             real_path = content_path(source_path(path))
             %Q{#{attribute}=#{quote}#{path.sub(extension, Nanoc3::Cachebuster.fingerprint_file(real_path) + extension)}#{quote}}
-          rescue NoSuchSourceFile, NoCacheBusting
+          rescue Nanoc3::Cachebuster::NoSuchSourceFile, Nanoc3::Cachebuster::NoCacheBusting
             m
           end
         end
@@ -129,8 +120,8 @@ module Nanoc3
         # to base the fingerprint on, or if the file for some reason has no
         # cache busting applied to it (for example, when it is manually overriden
         # in the Rules file.)
-        raise NoSuchSourceFile, 'no source file found matching ' + path unless matching_item
-        raise NoCacheBusting, 'there is no cache busting applied to ' + matching_item.identifier unless matching_item.path =~ /-cb[a-zA-Z0-9]{9}(?=\.)/
+        raise Nanoc3::Cachebuster::NoSuchSourceFile, 'no source file found matching ' + path unless matching_item
+        raise Nanoc3::Cachebuster::NoCacheBusting, 'there is no cache busting applied to ' + matching_item.identifier unless matching_item.path =~ /-cb[a-zA-Z0-9]{9}(?=\.)/
 
         # Return the path to the source file in question without the starting content
         # part, since that is added by #content_path
