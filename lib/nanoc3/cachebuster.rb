@@ -13,8 +13,11 @@ module Nanoc3
     # Value prepended to the file fingerprint, to identify it as a cache buster.
     CACHEBUSTER_PREFIX = '-cb'
 
-    # Custom exception that can be raised by #source_path
-    # when a source file for a reference cannot be found
+    # Custom exception that might be raised by the rewriting strategies when
+    # there can be no source file found for the reference that it found that
+    # might need rewriting.
+    #
+    # This exception should never bubble up from the filter.
     NoSuchSourceFile = Class.new(Exception)
 
     def self.should_apply_fingerprint_to_file?(item)

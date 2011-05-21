@@ -44,12 +44,40 @@ module Nanoc3
         end.include?(@item[:extension].to_s)
       end
 
+      # The Strategy is a way to deal with an input file. The Cache busting filter
+      # will use a strategy to process all references. You may want to use different
+      # strategies for different file types.
+      #
+      # @abstract
       class Strategy
-        attr_reader :site, :item
+        # The current site. We need a reference to that in a strategy,
+        # so we can browse through all its items.
+        #
+        # This might very well have been just the site#items array, but for
+        # future portability we might as well carry the entire site object
+        # over.
+        #
+        # @return <Nanoc3::Site>
+        attr_reader :site
 
-        def initialize(site, item)
-          @site, @item = site, item
+        # The Nanoc item we are currently filtering.
+        #
+        # @return <Nanoc3::Item>
+        attr_reader :current_item
+
+        def initialize(site, current_item)
+          @site, @current_item = site, current_item
         end
+
+        # Abstract method that subclasses (actual strategies) should
+        # implement.
+        #
+        # @abstract
+        def apply
+          raise Exception, 'Must be implemented in a subclass'
+        end
+
+      protected
 
         # Try to find the source path of a referenced file.
         #
@@ -70,23 +98,25 @@ module Nanoc3
           path = absolutize(input_path)
 
           matching_item = site.items.find do |i|
-            i.path.sub(/-cb[a-zA-Z0-9]{9}(?=\.)/, '') == path
+            i.path.sub(/#{Nanoc3::Cachebuster::CACHEBUSTER_PREFIX}[a-zA-Z0-9]{9}(?=\.)/o, '') == path
           end
 
-          raise Nanoc3::Cachebuster::NoSuchSourceFile, 'No source file found matching ' + input_path unless matching_item
+          # Raise an exception to indicate we should leave this reference alone
+          unless matching_item
+            raise Nanoc3::Cachebuster::NoSuchSourceFile, 'No source file found matching ' + input_path
+          end
 
-          output_path = matching_item.path
-          output_path.sub!(/^\//, '') unless input_path =~ /^\//
-          output_path
+          # Make sure to keep or remove the first slash, as the input path
+          # does.
+          matching_item.path.tap do |p|
+            p.sub!(/^\//, '') unless input_path =~ /^\//
+          end
         end
 
         # Get the absolute path to a file, whereby absolute means relative to the root.
         #
-        # When we are trying to get to a source file via a referenced filename,
-        # that filename may be absolute (relative to the site root) or relative to
-        # the file itself. In the latter case, our file detection would miss it.
-        # We therefore rewrite any reference not starting with a forward slash
-        # to include the full path of the referring item.
+        # We use the relative-to-root path to detect if our site contains an item
+        # that will be output to that location.
         #
         # @example Using an absolute input path in 'assets/styles.css'
         #   absolutize('/assets/logo.png') # => '/assets/logo.png'
@@ -99,20 +129,45 @@ module Nanoc3
         #   to the site root.
         def absolutize(path)
           return path if path =~ /^\//
-          File.join(File.dirname(item[:content_filename]), path).sub(/^content/, '')
+          File.join(File.dirname(current_item[:content_filename]), path).sub(/^content/, '')
         end
       end
 
+      # The Css strategy looks for CSS-style external references that use the
+      # url() syntax. This will typically cover any @import statements and
+      # references to images.
       class Css < Strategy
-        REGEX = /url\(('|"|)(([^'")]+)\.(#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')}))\1\)/i
+        REGEX = /
+          url\(          # Start with the literal url(
+          ('|"|)         # Then either a single, double or no quote at all
+          (
+            ([^'")]+)    # The file basename, and below the extension
+            \.(#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})
+          )
+          \1             # Repeat the same quote as at the start
+          \)             # And cose the url()
+        /ix
 
         def apply(m, quote, filename, basename, extension)
           m.sub(filename, output_filename(filename))
         end
       end
 
+      # The Html strategy looks for HTML-style attributes in the item source code,
+      # picking up the values of href and src attributes. This will typically cover
+      # links, stylesheets, images and javascripts.
       class Html < Strategy
-        REGEX = /(href|src)=("|'|)([^'"]+(\.(?:#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})))\2/
+        REGEX = /
+          (href|src)        # Look for either an href="" or src="" attribute
+          =                 # ...followed by an =
+          ("|'|)            # Then either a single, double or no quote at all
+          (                 # Capture the entire reference
+            [^'"]+          # Anything but something that would close the attribute
+                            # And then the extension:
+            (\.(?:#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')}))
+          )
+          \2                # Repeat the opening quote
+        /ix
 
         def apply(m, attribute, quote, filename, extension)
           %Q{#{attribute}=#{quote}#{output_filename(filename)}#{quote}}
