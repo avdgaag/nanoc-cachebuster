@@ -34,31 +34,31 @@ Then load it via your project Gemfile or in `./lib/default.rb`:
 Usage
 =====
 
-This gem provides a Nanoc filter you can use to rewrite references to static
-assets in your source files. These will be picked up automatically.
+This gem provides a simple helper method you can use to rewrite the output
+filename of your static assets to include a content-based fingerprint.
+A simple filter will look up the output filename you have generated, and
+replace any references to the regularly-named file to the rewritten one.
 
 So, when you include a stylesheet:
 
     <link rel="stylesheet" href="styles.css">
 
-This filter will change that on compilation to:
+And you rewrite the output of the file to include a fingerprint:
+
+    # in your ./lib/default.rb
+    include Nanoc3::Helpers::CacheBusting
+    # in ./Rules
+    route '/styles/' do
+      fp = fingerprint(item[:filename])
+      item.identifier.chop + fp + '.css'
+    end
+
+The filter will change your HTML on compilation to:
 
     <link rel="stylesheet" href="styles-cb7a4bb98ef.css">
 
-The adjusted filename changes every time the file itself changes, so you don't
-want to code that by hand in your Rules file. Instead, use the helper methods
-provided. First, include the helpers in your ./lib/default.rb:
-
-    include Nanoc3::Helpers::CacheBusting
-
-Then you can use `#should_cachebust?` and `#cachebusting_hash` in your routing
-rules to determine whether an item needs cachebusting, and get the fingerprint
-for it. So you can do something like:
-
-    route 'styles' do
-      fp = cachebust?(item) ? fingerprint(item[:filename]) : ''
-      item.identifier.chop + fp + '.' + item[:extension]
-    end
+You get simple, content-based cachebusters for free. All that is left for you
+to do is set some far-future expires header in your server configuration.
 
 Development
 ===========
