@@ -97,9 +97,16 @@ module Nanoc3
       #   an input file, such as a stylesheet or HTML page.
       # @return <String> path to the same file as the input path but relative
       #   to the site root.
+      # @todo make proper test case for this bug: items generated on the fly
+      #   do not have a content_filename attribute. Infer path from output
+      #   path.
       def absolutize(path)
         return path if path =~ /^\//
-        File.join(File.dirname(current_item[:content_filename]), path).sub(/^content/, '')
+        if current_item[:content_filename]
+          File.join(File.dirname(current_item[:content_filename]), path).sub(/^content/, '')
+        else
+          File.dirname(current_item.path)
+        end
       end
     end
 
