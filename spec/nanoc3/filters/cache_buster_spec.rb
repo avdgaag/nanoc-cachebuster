@@ -3,6 +3,10 @@ require 'ostruct'
 class MockItem
   attr_reader :path, :content
 
+  def self.generated_css_file
+    new '/styles-cb123456789.css', 'example content', { :extension => 'css' }
+  end
+
   def self.css_file(content = 'example content')
     new '/styles-cb123456789.css', content, { :extension => 'css', :content_filename => 'content/styles.css' }
   end
@@ -132,6 +136,13 @@ describe Nanoc3::Filters::CacheBuster do
       let(:target) { MockItem.image_file_unfiltered }
 
       it_should_not_filter %Q{background: url(foo.png);}
+    end
+
+    describe 'when the current item has no content path' do
+      let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
+      let(:item) { MockItem.generated_css_file }
+
+      it_should_filter %Q{background: url("../images/foo.png");} => %Q{background: url("../images/foo-cb123456789.png");}
     end
   end
 

@@ -10,10 +10,6 @@ task :install => :build do
   sh "gem install nanoc-cachebuster-#{Nanoc3::Cachebuster::VERSION}.gem"
 end
 
-task :tag do
-  sh "git tag -a #{Nanoc3::Cachebuster::VERSION}"
-end
-
 task :push do
   sh 'git push origin master'
   sh 'git push --tags'
@@ -36,8 +32,8 @@ task :log do
 end
 
 desc 'Tag the code, push upstream, build and push the gem'
-task :release => [:build, :tag, :push] do
-  sh "gem push nanoc-cachebuster-#{Nanoc3::Cachebuster::VERSION}"
+task :release => [:install, :push] do
+  sh "gem push nanoc-cachebuster-#{Nanoc3::Cachebuster::VERSION}.gem"
 end
 
 desc 'Print current version number'
