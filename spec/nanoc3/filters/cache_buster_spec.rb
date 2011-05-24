@@ -139,7 +139,7 @@ describe Nanoc3::Filters::CacheBuster do
     end
 
     describe 'when the current item has no content path' do
-      let(:target) { MockItem.image_file '/foo.png', '../images/foo-cb123456789.png' }
+      let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
       let(:item) { MockItem.generated_css_file }
 
       it_should_filter %Q{background: url("../images/foo.png");} => %Q{background: url("../images/foo-cb123456789.png");}

@@ -102,11 +102,11 @@ module Nanoc3
       #   path.
       def absolutize(path)
         return path if path =~ /^\//
-        # if current_item[:content_filename]
+        if current_item[:content_filename]
           File.join(File.dirname(current_item[:content_filename]), path).sub(/^content/, '')
-        # else
-        #   File.dirname(current_item.path)
-        # end
+        else
+          File.join(File.dirname(current_item.path), path)
+        end
       end
     end
 
