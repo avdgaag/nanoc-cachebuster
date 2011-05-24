@@ -105,7 +105,7 @@ module Nanoc3
         if current_item[:content_filename]
           File.join(File.dirname(current_item[:content_filename]), path).sub(/^content/, '')
         else
-          File.dirname(current_item.path)
+          File.join(File.dirname(current_item.path), path)
         end
       end
     end
