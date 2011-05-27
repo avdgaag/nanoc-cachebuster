@@ -1,3 +1,5 @@
+require 'pathname'
+
 module Nanoc3
   module Cachebuster
     # The Strategy is a way to deal with an input file. The Cache busting filter
@@ -76,11 +78,14 @@ module Nanoc3
           raise Nanoc3::Cachebuster::NoSuchSourceFile, 'No source file found matching ' + input_path
         end
 
-        # Make sure to keep or remove the first slash, as the input path
-        # does.
-        matching_item.path.tap do |p|
-          p.sub!(/^\//, '') unless input_path =~ /^\//
-        end
+        # keep using an absolute path if the input reference did so...
+        return matching_item.path if input_path =~ /^\//
+
+        # ... if not, recreate the relative path to referenced file from
+        # the current file path.
+        current_path = Pathname.new(File.dirname(current_item.path))
+        target_path  = Pathname.new(File.dirname(matching_item.path))
+        output_reference = target_path.relative_path_from(current_path).join(File.basename(matching_item.path))
       end
 
       # Get the absolute path to a file, whereby absolute means relative to the root.
@@ -103,7 +108,7 @@ module Nanoc3
       def absolutize(path)
         return path if path =~ /^\//
         if current_item[:content_filename]
-          File.join(File.dirname(current_item[:content_filename]), path).sub(/^content/, '')
+          File.expand_path(File.join(File.dirname(current_item[:content_filename]), path)).sub(/^#{Dir.pwd}/, '').sub(/^\/content/, '')
         else
           File.dirname(current_item.path)
         end

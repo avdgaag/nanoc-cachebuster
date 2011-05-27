@@ -7,8 +7,16 @@ class MockItem
     new '/styles-cb123456789.css', content, { :extension => 'css', :content_filename => 'content/styles.css' }
   end
 
+  def self.css_file_in_folder(folder_name = 'assets')
+    new "/#{folder_name}/styles-cb123456789.css", 'example content', { :extension => 'css', :content_filename => "content/#{folder_name}/styles.css" }
+  end
+
   def self.html_file(content = 'example content')
     new '/output_file.html', content, { :extension => 'html', :content_filename => 'content/input_file.html' }
+  end
+
+  def self.html_file_in_folder(folder_name = 'baz', content = 'example content')
+    new "/#{folder_name}/output_file.html", content, { :extension => 'html', :content_filename => "content/#{folder_name}/input_file.html" }
   end
 
   def self.image_file(input = '/foo.png', output = '/foo-cb123456789.png')
@@ -113,10 +121,11 @@ describe Nanoc3::Filters::CacheBuster do
     end
 
     describe 'when using a relative path' do
-      let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
+      let(:item) { MockItem.css_file_in_folder }
+      let(:target) { MockItem.image_file '/images/foo.png', '/images/foo-cb123456789.png' }
 
       before(:each) do
-        File.stub!(:read).with(File.join(Dir.pwd, 'content', 'foo.png')).and_return(context[:content])
+        File.stub!(:read).with(File.join(Dir.pwd, 'content', 'images', 'foo.png')).and_return(context[:content])
       end
 
       it_should_filter %Q{background: url("../images/foo.png");} => %Q{background: url("../images/foo-cb123456789.png");}
@@ -168,7 +177,8 @@ describe Nanoc3::Filters::CacheBuster do
       end
 
       describe 'when using a relative path' do
-        let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
+        let(:item) { MockItem.html_file_in_folder }
+        let(:target) { MockItem.image_file '/foo.png', '/images/foo-cb123456789.png' }
 
         before(:each) do
           File.stub!(:read).with(File.join(Dir.pwd, 'content', 'foo.png')).and_return(context[:content])
@@ -222,7 +232,8 @@ describe Nanoc3::Filters::CacheBuster do
       end
 
       describe 'when using a relative path' do
-        let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
+        let(:item) { MockItem.html_file_in_folder }
+        let(:target) { MockItem.image_file '/foo.png', '/images/foo-cb123456789.png' }
 
         before(:each) do
           File.stub!(:read).with(File.join(Dir.pwd, 'content', 'foo.png')).and_return(context[:content])
