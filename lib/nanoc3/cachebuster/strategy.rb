@@ -110,7 +110,7 @@ module Nanoc3
         if current_item[:content_filename]
           File.expand_path(File.join(File.dirname(current_item[:content_filename]), path)).sub(/^#{Dir.pwd}/, '').sub(/^\/content/, '')
         else
-          File.join(File.dirname(current_item.path), path)
+          File.expand_path(File.dirname(current_item.path), path)
         end
       end
     end
