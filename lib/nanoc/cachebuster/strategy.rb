@@ -131,7 +131,7 @@ module Nanoc
       /ix
 
       def apply(m, quote, filename, basename, extension)
-        m.sub(filename, output_filename(filename))
+        m.sub(filename, output_filename(filename).to_s)
       end
     end
 
