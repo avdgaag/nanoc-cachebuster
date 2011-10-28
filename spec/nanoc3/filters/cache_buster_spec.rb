@@ -1,7 +1,12 @@
+require 'spec_helper'
 require 'ostruct'
 
 class MockItem
   attr_reader :path, :content
+
+  def self.generated_css_file
+    new '/styles-cb123456789.css', 'example content', { :extension => 'css' }
+  end
 
   def self.css_file(content = 'example content')
     new '/styles-cb123456789.css', content, { :extension => 'css', :content_filename => 'content/styles.css' }
@@ -141,6 +146,16 @@ describe Nanoc3::Filters::CacheBuster do
       let(:target) { MockItem.image_file_unfiltered }
 
       it_should_not_filter %Q{background: url(foo.png);}
+    end
+    
+    # Needs documentation on what this test is actually testing, and thinking on convention.
+    # This is currently responding to the else on line 113 of cachebuster#strategy.rb which is not adding the cb hash to the end of the file name.
+    # Need to discover under what condition does an item has no :content_filename and consider what is best convention to handle this case.
+    describe 'when the current item has no content path' do
+      let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
+      let(:item) { MockItem.generated_css_file }
+
+      it_should_filter %Q{background: url("../images/foo.png");} => %Q{background: url("../images/foo-cb123456789.png");}
     end
   end
 
