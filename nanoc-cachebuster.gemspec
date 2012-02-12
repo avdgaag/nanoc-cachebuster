@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path('../lib', __FILE__)
-require 'nanoc3/cachebuster/version'
+require 'nanoc/cachebuster/version'
 
 Gem::Specification.new do |s|
   s.name        = 'nanoc-cachebuster'
-  s.version     = Nanoc3::Cachebuster::VERSION
+  s.version     = Nanoc::Cachebuster::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Arjan van der Gaag']
   s.email       = ['arjan@arjanvandergaag.nl']
@@ -31,4 +31,8 @@ EOS
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ['lib']
+  
+  s.add_runtime_dependency 'nanoc', '>= 3.3.0'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
 end

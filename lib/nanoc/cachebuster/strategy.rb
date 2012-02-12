@@ -1,6 +1,6 @@
 require 'pathname'
 
-module Nanoc3
+module Nanoc
   module Cachebuster
     # The Strategy is a way to deal with an input file. The Cache busting filter
     # will use a strategy to process all references. You may want to use different
@@ -17,7 +17,7 @@ module Nanoc3
 
       def self.for(kind, site, item)
         klass = @subclasses[kind]
-        raise Nanoc3::Cachebuster::NoSuchStrategy.new "No strategy found for #{kind}" unless klass
+        raise Nanoc::Cachebuster::NoSuchStrategy.new "No strategy found for #{kind}" unless klass
         klass.new(site, item)
       end
 
@@ -28,12 +28,12 @@ module Nanoc3
       # future portability we might as well carry the entire site object
       # over.
       #
-      # @return <Nanoc3::Site>
+      # @return <Nanoc::Site>
       attr_reader :site
 
       # The Nanoc item we are currently filtering.
       #
-      # @return <Nanoc3::Item>
+      # @return <Nanoc::Item>
       attr_reader :current_item
 
       def initialize(site, current_item)
@@ -70,12 +70,12 @@ module Nanoc3
 
         matching_item = site.items.find do |i|
           next unless i.path # some items don't have an output path. Ignore those.
-          i.path.sub(/#{Nanoc3::Cachebuster::CACHEBUSTER_PREFIX}[a-zA-Z0-9]{9}(?=\.)/o, '') == path
+          i.path.sub(/#{Nanoc::Cachebuster::CACHEBUSTER_PREFIX}[a-zA-Z0-9]{9}(?=\.)/o, '') == path
         end
 
         # Raise an exception to indicate we should leave this reference alone
         unless matching_item
-          raise Nanoc3::Cachebuster::NoSuchSourceFile, 'No source file found matching ' + input_path
+          raise Nanoc::Cachebuster::NoSuchSourceFile, 'No source file found matching ' + input_path
         end
 
         # keep using an absolute path if the input reference did so...
@@ -124,7 +124,7 @@ module Nanoc3
         ('|"|)         # Then either a single, double or no quote at all
         (
           ([^'")]+)    # The file basename, and below the extension
-          \.(#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})
+          \.(#{Nanoc::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')})
         )
         \1             # Repeat the same quote as at the start
         \)             # And cose the url()
@@ -146,7 +146,7 @@ module Nanoc3
         (                 # Capture the entire reference
           [^'"]+          # Anything but something that would close the attribute
                           # And then the extension:
-          (\.(?:#{Nanoc3::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')}))
+          (\.(?:#{Nanoc::Cachebuster::FILETYPES_TO_FINGERPRINT.join('|')}))
         )
         \2                # Repeat the opening quote
       /ix

@@ -30,7 +30,7 @@ install this gem:
 Then load it via your project Gemfile or in `./lib/default.rb`:
 
 ```ruby
-require 'nanoc3/cachebuster'
+require 'nanoc/cachebuster'
 ```
 
 Usage
@@ -51,7 +51,7 @@ And you rewrite the output of the file to include a fingerprint:
 
 ```ruby
 # in your ./lib/default.rb
-include Nanoc3::Helpers::CacheBusting
+include Nanoc::Helpers::CacheBusting
 # in ./Rules
 route '/styles/' do
   fp = fingerprint(item[:filename])

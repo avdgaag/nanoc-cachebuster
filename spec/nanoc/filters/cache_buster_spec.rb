@@ -44,12 +44,12 @@ class MockItem
   end
 end
 
-describe Nanoc3::Filters::CacheBuster do
+describe Nanoc::Filters::CacheBuster do
   before(:each) do
     Digest::MD5.stub!(:hexdigest).and_return('123456789')
   end
 
-  let(:subject) { Nanoc3::Filters::CacheBuster.new context }
+  let(:subject) { Nanoc::Filters::CacheBuster.new context }
   let(:content) { item.content }
   let(:item)    { MockItem.css_file }
   let(:target)  { MockItem.image_file }
@@ -65,7 +65,7 @@ describe Nanoc3::Filters::CacheBuster do
   end
 
   describe 'filter interface' do
-    it { should be_kind_of(Nanoc3::Filter) }
+    it { should be_kind_of(Nanoc::Filter) }
     it { should respond_to(:run) }
 
     it 'should accept a string and an options Hash' do

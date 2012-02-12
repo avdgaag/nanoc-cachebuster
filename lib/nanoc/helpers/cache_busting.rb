@@ -1,4 +1,4 @@
-module Nanoc3
+module Nanoc
   module Helpers
     module CacheBusting
 
@@ -15,7 +15,7 @@ module Nanoc3
       # @param <Item> item is the item to test
       # @return <Boolean>
       def cachebust?(item)
-        Nanoc3::Cachebuster.should_apply_fingerprint_to_file?(item)
+        Nanoc::Cachebuster.should_apply_fingerprint_to_file?(item)
       end
 
       # Get a unique fingerprint for a file's content. This currently uses
@@ -25,7 +25,7 @@ module Nanoc3
       # @param <String> filename is the path to the file to fingerprint.
       # @return <String> file fingerprint
       def fingerprint(filename)
-        Nanoc3::Cachebuster.fingerprint_file(filename)
+        Nanoc::Cachebuster.fingerprint_file(filename)
       end
     end
   end
