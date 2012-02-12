@@ -1,7 +1,7 @@
-describe Nanoc3::Helpers::CacheBusting do
+describe Nanoc::Helpers::CacheBusting do
   let(:subject) do
     o = Object.new
-    o.extend Nanoc3::Helpers::CacheBusting
+    o.extend Nanoc::Helpers::CacheBusting
   end
 
   describe '#should_cachebust?' do

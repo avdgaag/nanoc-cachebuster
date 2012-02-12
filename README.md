@@ -29,7 +29,9 @@ install this gem:
 
 Then load it via your project Gemfile or in `./lib/default.rb`:
 
-    require 'nanoc3/cachebuster'
+```ruby
+require 'nanoc/cachebuster'
+```
 
 Usage
 =====
@@ -41,21 +43,27 @@ replace any references to the regularly-named file to the rewritten one.
 
 So, when you include a stylesheet:
 
-    <link rel="stylesheet" href="styles.css">
+```html
+<link rel="stylesheet" href="styles.css">
+```
 
 And you rewrite the output of the file to include a fingerprint:
 
-    # in your ./lib/default.rb
-    include Nanoc3::Helpers::CacheBusting
-    # in ./Rules
-    route '/styles/' do
-      fp = fingerprint(item[:filename])
-      item.identifier.chop + fp + '.css'
-    end
+```ruby
+# in your ./lib/default.rb
+include Nanoc::Helpers::CacheBusting
+# in ./Rules
+route '/styles/' do
+  fp = fingerprint(item[:filename])
+  item.identifier.chop + fp + '.css'
+end
+```
 
 The filter will change your HTML on compilation to:
 
-    <link rel="stylesheet" href="styles-cb7a4bb98ef.css">
+```html
+<link rel="stylesheet" href="styles-cb7a4bb98ef.css">
+```
 
 You get simple, content-based cachebusters for free. All that is left for you
 to do is set some far-future expires header in your server configuration.
