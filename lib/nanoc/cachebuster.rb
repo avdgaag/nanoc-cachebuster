@@ -1,7 +1,7 @@
-require 'nanoc3'
+require 'nanoc'
 require 'digest'
 
-module Nanoc3
+module Nanoc
   module Cachebuster
     autoload :VERSION,  'cachebuster/version'
 
