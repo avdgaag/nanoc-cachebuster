@@ -1,2 +1,1 @@
-require 'nanoc3/cachebuster'
-
+require 'nanoc/cachebuster'

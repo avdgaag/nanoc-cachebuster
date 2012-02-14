@@ -3,6 +3,10 @@ require 'ostruct'
 class MockItem
   attr_reader :path, :content
 
+  def self.generated_css_file
+    new '/styles-cb123456789.css', 'example content', { :extension => 'css' }
+  end
+
   def self.css_file(content = 'example content')
     new '/styles-cb123456789.css', content, { :extension => 'css', :content_filename => 'content/styles.css' }
   end
@@ -44,12 +48,12 @@ class MockItem
   end
 end
 
-describe Nanoc3::Filters::CacheBuster do
+describe Nanoc::Filters::CacheBuster do
   before(:each) do
     Digest::MD5.stub!(:hexdigest).and_return('123456789')
   end
 
-  let(:subject) { Nanoc3::Filters::CacheBuster.new context }
+  let(:subject) { Nanoc::Filters::CacheBuster.new context }
   let(:content) { item.content }
   let(:item)    { MockItem.css_file }
   let(:target)  { MockItem.image_file }
@@ -65,7 +69,7 @@ describe Nanoc3::Filters::CacheBuster do
   end
 
   describe 'filter interface' do
-    it { should be_kind_of(Nanoc3::Filter) }
+    it { should be_kind_of(Nanoc::Filter) }
     it { should respond_to(:run) }
 
     it 'should accept a string and an options Hash' do
@@ -141,6 +145,13 @@ describe Nanoc3::Filters::CacheBuster do
       let(:target) { MockItem.image_file_unfiltered }
 
       it_should_not_filter %Q{background: url(foo.png);}
+    end
+
+    describe 'when the current item has no content path' do
+      let(:target) { MockItem.image_file '/foo.png', '/../images/foo-cb123456789.png' }
+      let(:item) { MockItem.generated_css_file }
+
+      it_should_filter %Q{background: url("../images/foo.png");} => %Q{background: url("../images/foo-cb123456789.png");}
     end
   end
 
