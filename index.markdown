@@ -40,8 +40,8 @@ $ gem install nanoc-cachebuster
 To use `nanoc-cachebuster` in your static site project, it is probably best to `require` and `include` it in your `./lib/default.rb` file:
 
 {% highlight ruby %}
-require 'nanoc3/cachebuster'
-include Nanoc3::Helpers::CacheBusting
+require 'nanoc/cachebuster'
+include Nanoc::Helpers::CacheBusting
 {% endhighlight %}
 
 ### Usage in your `Rules` file
