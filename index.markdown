@@ -3,11 +3,11 @@ layout: default
 title: nanoc-cachebuster
 tagline: Simple cache busting for Nanoc projects
 nav:
-  - url: http://avdgaag.github.com/nanoc-cachebuster
+  - url: https://avdgaag.github.com/nanoc-cachebuster
     label: Homepage
-  - url: http://github.com/avdgaag/nanoc-cachebuster/issues
+  - url: https://github.com/avdgaag/nanoc-cachebuster/issues
     label: Issues
-  - url: http://github.com/avdgaag/nanoc-cachebuster
+  - url: https://github.com/avdgaag/nanoc-cachebuster
     label: Source
   - url: http://rubydoc.info/gems/nanoc-cachebuster/0.1.0/frames
     label: Docs
