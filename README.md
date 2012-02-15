@@ -71,6 +71,8 @@ to do is set some far-future expires header in your server configuration.
 Development
 ===========
 
+Development happens in the `develop` branch, with stable code being merged to `master` to be released.
+
 Changes
 -------
 
