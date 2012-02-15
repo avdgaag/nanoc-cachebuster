@@ -1,9 +1,10 @@
 require 'nanoc'
 require 'digest'
 
+require 'nanoc/cachebuster/version'
+
 module Nanoc
   module Cachebuster
-    autoload :VERSION,  'cachebuster/version'
 
     # List of file extensions that the routing system should regard
     # as needing a fingerprint. These are input file extensions, so
@@ -38,7 +39,8 @@ module Nanoc
     end
   end
 
-  require File.expand_path('../filters', __FILE__)
-  require File.expand_path('../helpers', __FILE__)
-  require File.expand_path('../cachebuster/strategy', __FILE__)
 end
+
+require 'nanoc/cachebuster/strategy'
+require 'nanoc/filters/cache_buster'
+require 'nanoc/helpers/cache_busting'
