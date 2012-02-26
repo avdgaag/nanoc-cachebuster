@@ -1,6 +1,11 @@
+# 0.3.0
+
+* Fixed naming collisions with Nanoc3
+
 # 0.2.0
 
 * Nanoc 3.3 compatibility (by John Nishinaga)
+* Fixed spec suite (by Robert J Whitney)
 
 # 0.1.1
 
