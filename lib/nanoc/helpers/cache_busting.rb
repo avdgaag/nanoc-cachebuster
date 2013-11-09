@@ -24,8 +24,8 @@ module Nanoc
       # @todo Also allow passing in an item rather than a path
       # @param <String> filename is the path to the file to fingerprint.
       # @return <String> file fingerprint
-      def fingerprint(filename)
-        Nanoc::Cachebuster.fingerprint_file(filename)
+      def fingerprint(filename, length = 8)
+        Nanoc::Cachebuster.fingerprint_file(filename, length)
       end
     end
   end
