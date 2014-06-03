@@ -70,7 +70,7 @@ module Nanoc
 
         matching_item = site.items.find do |i|
           next unless i.path # some items don't have an output path. Ignore those.
-          i.path.sub(/#{Nanoc::Cachebuster::CACHEBUSTER_PREFIX}[a-zA-Z0-9]{9}(?=\.)/o, '') == path
+          i.path.sub(/#{Nanoc::Cachebuster::CACHEBUSTER_PREFIX}[a-zA-Z0-9]{9}(?=(@2x)?\.)/o, '') == path
         end
 
         # Raise an exception to indicate we should leave this reference alone
