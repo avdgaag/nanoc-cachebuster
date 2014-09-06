@@ -35,7 +35,7 @@ module Nanoc
     end
 
     def self.fingerprint_file(filename, length = 8)
-      CACHEBUSTER_PREFIX + Digest::MD5.hexdigest(File.read(filename))[0..length.to_i]
+      CACHEBUSTER_PREFIX + Digest::MD5.hexdigest(File.open(filename, 'rb'){|io| io.read})[0..length.to_i]
     end
   end
 
