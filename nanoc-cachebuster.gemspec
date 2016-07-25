@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Arjan van der Gaag']
   s.email       = ['arjan@arjanvandergaag.nl']
-  s.homepage    = 'http://github.com/avdgaag/nanoc_cachebuster'
+  s.homepage    = 'https://github.com/avdgaag/nanoc-cachebuster'
   s.summary     = %q{Adds filters and helpers for cache busting to Nanoc}
   s.description = <<-EOS
 Your website should use far-future expires headers on static assets, to make
